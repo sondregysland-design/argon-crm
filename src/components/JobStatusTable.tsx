@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import type { ScrapeJob } from "@/lib/db/schema";
@@ -10,7 +11,34 @@ const jobLabels: Record<string, string> = {
   google_enrich: "Google Places-berikelse",
 };
 
-export function JobStatusTable({ jobs }: { jobs: ScrapeJob[] }) {
+export function JobStatusTable({ jobs: initialJobs }: { jobs: ScrapeJob[] }) {
+  const [jobs, setJobs] = useState(initialJobs);
+  const [runningId, setRunningId] = useState<number | null>(null);
+
+  async function handleRunJob(jobId: number) {
+    setRunningId(jobId);
+    try {
+      const res = await fetch("/api/jobber", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId }),
+      });
+      if (res.ok) {
+        // Refresh job list after a short delay to pick up status change
+        setTimeout(async () => {
+          const refreshed = await fetch("/api/jobber");
+          const data = await refreshed.json();
+          setJobs(data);
+          setRunningId(null);
+        }, 2000);
+      } else {
+        setRunningId(null);
+      }
+    } catch {
+      setRunningId(null);
+    }
+  }
+
   return (
     <div className="overflow-x-auto rounded-xl border border-gray-100 bg-white">
       <table className="w-full text-left text-sm">
@@ -35,8 +63,13 @@ export function JobStatusTable({ jobs }: { jobs: ScrapeJob[] }) {
               </td>
               <td className="px-4 py-3 text-text-light">{job.recordsProcessed ?? "—"}</td>
               <td className="px-4 py-3">
-                <Button variant="ghost" className="text-xs" disabled={job.status === "running"}>
-                  Kjør nå
+                <Button
+                  variant="ghost"
+                  className="text-xs"
+                  disabled={job.status === "running" || runningId === job.id}
+                  onClick={() => handleRunJob(job.id)}
+                >
+                  {runningId === job.id ? "Starter..." : "Kjør nå"}
                 </Button>
               </td>
             </tr>

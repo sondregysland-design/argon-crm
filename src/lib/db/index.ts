@@ -1,8 +1,6 @@
 import Database from "better-sqlite3";
 import { drizzle } from "drizzle-orm/better-sqlite3";
-import { sql } from "drizzle-orm";
 import * as schema from "./schema";
-import { scrapeJobs } from "./schema";
 import { join } from "path";
 import { mkdirSync } from "fs";
 
@@ -14,12 +12,20 @@ sqlite.pragma("journal_mode = WAL");
 
 export const db = drizzle(sqlite, { schema });
 
-// Seed default jobs if empty
-const jobCount = db.select({ count: sql<number>`count(*)` }).from(scrapeJobs).get();
-if (jobCount && jobCount.count === 0) {
-  db.insert(scrapeJobs).values([
-    { name: "brreg_sync", cronExpression: "0 3 * * 1", status: "idle" },
-    { name: "proff_enrich", cronExpression: "0 3 * * 2", status: "idle" },
-    { name: "google_enrich", cronExpression: "0 3 * * 3", status: "idle" },
-  ]).run();
+// Seed default jobs — deduplicate by name
+const seedJobs = [
+  { name: "brreg_sync", cron: "0 3 * * 1" },
+  { name: "proff_enrich", cron: "0 3 * * 2" },
+  { name: "google_enrich", cron: "0 3 * * 3" },
+];
+
+for (const job of seedJobs) {
+  sqlite.exec(`INSERT OR IGNORE INTO scrape_jobs (name, cron_expression, status) VALUES ('${job.name}', '${job.cron}', 'idle')`);
 }
+
+// Clean up any duplicate rows from earlier seeding bug
+sqlite.exec(`
+  DELETE FROM scrape_jobs WHERE id NOT IN (
+    SELECT MIN(id) FROM scrape_jobs GROUP BY name
+  )
+`);

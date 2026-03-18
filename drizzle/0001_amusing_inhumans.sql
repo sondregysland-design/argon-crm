@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `scrape_jobs_name_unique` ON `scrape_jobs` (`name`);

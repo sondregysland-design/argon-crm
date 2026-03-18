@@ -45,7 +45,7 @@ export const activities = sqliteTable("activities", {
 
 export const scrapeJobs = sqliteTable("scrape_jobs", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  name: text("name").notNull(),
+  name: text("name").unique().notNull(),
   status: text("status", { enum: ["idle", "running", "success", "failed"] }).notNull().default("idle"),
   lastRunAt: text("last_run_at"),
   nextRunAt: text("next_run_at"),
