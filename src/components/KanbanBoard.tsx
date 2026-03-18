@@ -11,6 +11,35 @@ export function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
   const [leads, setLeads] = useState(initialLeads);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
+  function moveLead(leadId: number, newStage: string) {
+    const lead = leads.find((l) => l.id === leadId);
+    if (!lead || lead.stage === newStage) return;
+
+    setLeads((prev) => prev.map((l) => l.id === leadId ? { ...l, stage: newStage as typeof STAGES[number] } : l));
+
+    fetch("/api/pipeline", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ leadId, newStage, newOrder: 0 }),
+    }).catch(() => {
+      setLeads((prev) => prev.map((l) => l.id === leadId ? { ...l, stage: lead.stage } : l));
+    });
+  }
+
+  async function deleteAllInStage(stage: string) {
+    const stageLeads = leads.filter((l) => l.stage === stage);
+    if (stageLeads.length === 0) return;
+    if (!confirm(`Er du sikker på at du vil slette ${stageLeads.length} leads fra "${stage}"?`)) return;
+
+    // Optimistic: remove from UI
+    setLeads((prev) => prev.filter((l) => l.stage !== stage));
+
+    // Delete each lead via API
+    for (const lead of stageLeads) {
+      await fetch(`/api/leads/${lead.id}`, { method: "DELETE" }).catch(() => {});
+    }
+  }
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over) return;
@@ -18,24 +47,8 @@ export function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
     const leadId = active.id as number;
     const newStage = over.id as typeof STAGES[number];
 
-    // Only handle drops on columns
     if (!STAGES.includes(newStage)) return;
-
-    const lead = leads.find((l) => l.id === leadId);
-    if (!lead || lead.stage === newStage) return;
-
-    // Optimistic update
-    setLeads((prev) => prev.map((l) => l.id === leadId ? { ...l, stage: newStage } : l));
-
-    // Persist
-    fetch("/api/pipeline", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ leadId, newStage, newOrder: 0 }),
-    }).catch(() => {
-      // Revert on error
-      setLeads((prev) => prev.map((l) => l.id === leadId ? { ...l, stage: lead.stage } : l));
-    });
+    moveLead(leadId, newStage);
   }
 
   return (
@@ -46,6 +59,8 @@ export function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
             key={stage}
             stage={stage}
             leads={leads.filter((l) => l.stage === stage)}
+            onDeleteAll={stage === "ny" ? () => deleteAllInStage("ny") : undefined}
+            onMoveLead={moveLead}
           />
         ))}
       </div>

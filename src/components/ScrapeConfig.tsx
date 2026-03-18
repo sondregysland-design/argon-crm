@@ -3,25 +3,7 @@
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
-
-const KOMMUNER = [
-  { value: "", label: "Alle kommuner" },
-  { value: "1103", label: "Stavanger" },
-  { value: "1101", label: "Eigersund" },
-  { value: "1106", label: "Haugesund" },
-  { value: "4601", label: "Bergen" },
-  { value: "0301", label: "Oslo" },
-  { value: "5001", label: "Trondheim" },
-];
-
-const NACE = [
-  { value: "", label: "Alle bransjer" },
-  { value: "06", label: "Utvinning av råolje og naturgass" },
-  { value: "09", label: "Tjenester tilknyttet utvinning" },
-  { value: "35", label: "Elektrisitetsforsyning" },
-  { value: "62", label: "Programmering og konsulentvirksomhet" },
-  { value: "71", label: "Arkitektur og teknisk konsulentvirksomhet" },
-];
+import { KOMMUNER, NACE_CODES } from "@/lib/constants";
 
 const MAX_LEADS_OPTIONS = [
   { value: "50", label: "50 leads" },
@@ -77,7 +59,7 @@ export function ScrapeConfig({ onStart, disabled }: ScrapeConfigProps) {
         <div className="w-64">
           <label className="mb-1 block text-sm font-medium text-text">Bransje (NACE)</label>
           <Select name="naeringskode">
-            {NACE.map((n) => <option key={n.value} value={n.value}>{n.label}</option>)}
+            {NACE_CODES.map((n) => <option key={n.value} value={n.value}>{n.label}</option>)}
           </Select>
         </div>
       </div>
