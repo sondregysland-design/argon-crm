@@ -12,10 +12,10 @@ export const dynamic = "force-dynamic";
 
 export default async function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const lead = db.select().from(leads).where(eq(leads.id, parseInt(id))).get();
+  const lead = await db.select().from(leads).where(eq(leads.id, parseInt(id))).get();
   if (!lead) notFound();
 
-  const leadActivities = db.select().from(activities)
+  const leadActivities = await db.select().from(activities)
     .where(eq(activities.leadId, lead.id))
     .orderBy(desc(activities.createdAt))
     .all();

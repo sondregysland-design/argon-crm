@@ -15,8 +15,8 @@ export async function GET(request: NextRequest) {
   if (industryCode) conditions.push(like(leads.industryCode, `${industryCode}%`));
 
   const result = conditions.length > 0
-    ? db.select().from(leads).where(and(...conditions)).orderBy(leads.stageOrder).all()
-    : db.select().from(leads).orderBy(leads.stageOrder).all();
+    ? await db.select().from(leads).where(and(...conditions)).orderBy(leads.stageOrder).all()
+    : await db.select().from(leads).orderBy(leads.stageOrder).all();
 
   return NextResponse.json(result);
 }
@@ -24,12 +24,12 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const body = await request.json();
 
-  const existing = db.select().from(leads).where(eq(leads.orgNumber, body.orgNumber)).get();
+  const existing = await db.select().from(leads).where(eq(leads.orgNumber, body.orgNumber)).get();
   if (existing) {
     return NextResponse.json({ error: "Bedriften er allerede i pipeline" }, { status: 409 });
   }
 
-  const [newLead] = db.insert(leads).values({
+  const result = await db.insert(leads).values({
     orgNumber: body.orgNumber,
     name: body.name,
     industryCode: body.industryCode ?? null,
@@ -41,13 +41,15 @@ export async function POST(request: NextRequest) {
     website: body.website ?? null,
     employees: body.employees ?? null,
     foundedDate: body.foundedDate ?? null,
-  }).returning().all();
+  }).returning();
 
-  db.insert(activities).values({
+  const newLead = result[0];
+
+  await db.insert(activities).values({
     leadId: newLead.id,
     type: "stage_change",
     description: "Lagt til i pipeline",
-  }).run();
+  });
 
   return NextResponse.json(newLead, { status: 201 });
 }

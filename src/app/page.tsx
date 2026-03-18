@@ -5,8 +5,8 @@ import { KanbanBoard } from "@/components/KanbanBoard";
 
 export const dynamic = "force-dynamic";
 
-export default function DashboardPage() {
-  const allLeads = db.select().from(leads).orderBy(leads.stageOrder).all();
+export default async function DashboardPage() {
+  const allLeads = await db.select().from(leads).orderBy(leads.stageOrder).all();
 
   return (
     <div className="space-y-6">

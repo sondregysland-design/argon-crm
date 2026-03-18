@@ -74,12 +74,12 @@ export async function POST(request: NextRequest) {
 
           try {
             const mapped = mapEnhetToLead(enhet);
-            const existing = db.select().from(leads).where(eq(leads.orgNumber, mapped.orgNumber)).get();
+            const existing = await db.select().from(leads).where(eq(leads.orgNumber, mapped.orgNumber)).get();
 
             if (existing) {
               skipped++;
             } else {
-              const [newLead] = db.insert(leads).values({
+              const [newLead] = await db.insert(leads).values({
                 orgNumber: mapped.orgNumber,
                 name: mapped.name,
                 industryCode: mapped.industryCode,
@@ -91,13 +91,13 @@ export async function POST(request: NextRequest) {
                 website: mapped.website,
                 employees: mapped.employees,
                 foundedDate: mapped.foundedDate,
-              }).returning().all();
+              }).returning();
 
-              db.insert(activities).values({
+              await db.insert(activities).values({
                 leadId: newLead.id,
                 type: "data_enriched",
                 description: "Lagt til via auto-scrape",
-              }).run();
+              });
 
               added++;
             }
@@ -132,12 +132,12 @@ export async function POST(request: NextRequest) {
 
             try {
               const mapped = mapEnhetToLead(enhet);
-              const existing = db.select().from(leads).where(eq(leads.orgNumber, mapped.orgNumber)).get();
+              const existing = await db.select().from(leads).where(eq(leads.orgNumber, mapped.orgNumber)).get();
 
               if (existing) {
                 skipped++;
               } else {
-                const [newLead] = db.insert(leads).values({
+                const [newLead] = await db.insert(leads).values({
                   orgNumber: mapped.orgNumber,
                   name: mapped.name,
                   industryCode: mapped.industryCode,
@@ -149,7 +149,7 @@ export async function POST(request: NextRequest) {
                   website: mapped.website,
                   employees: mapped.employees,
                   foundedDate: mapped.foundedDate,
-                }).returning().all();
+                }).returning();
 
                 db.insert(activities).values({
                   leadId: newLead.id,

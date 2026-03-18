@@ -4,8 +4,8 @@ import { JobStatusTable } from "@/components/JobStatusTable";
 
 export const dynamic = "force-dynamic";
 
-export default function JobberPage() {
-  const jobs = db.select().from(scrapeJobs).all();
+export default async function JobberPage() {
+  const jobs = await db.select().from(scrapeJobs).all();
 
   return (
     <div className="space-y-6">

@@ -33,13 +33,13 @@ export async function GET(request: NextRequest) {
 
     // Cache results
     for (const enhet of result.enheter) {
-      const existing = db.select().from(searchCache).where(eq(searchCache.orgNumber, enhet.organisasjonsnummer)).get();
+      const existing = await db.select().from(searchCache).where(eq(searchCache.orgNumber, enhet.organisasjonsnummer)).get();
       if (!existing) {
-        db.insert(searchCache).values({
+        await db.insert(searchCache).values({
           orgNumber: enhet.organisasjonsnummer,
           data: JSON.stringify(enhet),
           fetchedAt: new Date().toISOString(),
-        }).run();
+        });
       }
     }
 
