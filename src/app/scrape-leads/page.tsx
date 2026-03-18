@@ -15,6 +15,12 @@ export default function ScrapeLeadsPage() {
     setProgress({ added: 0, skipped: 0, failed: 0, processed: 0, total: 0 });
     setErrorMessage("");
 
+    if (!config.navn && !config.kommunenummer && !config.naeringskode) {
+      setStatus("error");
+      setErrorMessage("Velg minst ett filter: bedriftsnavn, kommune, eller bransje.");
+      return;
+    }
+
     try {
       const res = await fetch("/api/scrape-leads", {
         method: "POST",
@@ -23,8 +29,9 @@ export default function ScrapeLeadsPage() {
       });
 
       if (!res.ok || !res.body) {
+        const err = await res.json().catch(() => null);
         setStatus("error");
-        setErrorMessage("Kunne ikke starte scraping");
+        setErrorMessage(err?.error ?? "Kunne ikke starte scraping");
         return;
       }
 

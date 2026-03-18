@@ -24,6 +24,14 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const { navn, kommunenummer, naeringskode, fraAntallAnsatte, tilAntallAnsatte, maxLeads } = body;
 
+  // Brønnøysund API krever minst ett hovedfilter
+  if (!navn && !kommunenummer && !naeringskode) {
+    return new Response(
+      JSON.stringify({ error: "Velg minst ett filter: bedriftsnavn, kommune, eller bransje" }),
+      { status: 400, headers: { "Content-Type": "application/json" } },
+    );
+  }
+
   const encoder = new TextEncoder();
 
   const stream = new ReadableStream({
