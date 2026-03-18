@@ -25,9 +25,10 @@ const stageArrowColors: Record<string, string> = {
 interface LeadCardProps {
   lead: Lead;
   onMoveLead?: (leadId: number, newStage: string) => void;
+  onDelete?: (leadId: number) => void;
 }
 
-export function LeadCard({ lead, onMoveLead }: LeadCardProps) {
+export function LeadCard({ lead, onMoveLead, onDelete }: LeadCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: lead.id,
     data: { lead },
@@ -51,8 +52,9 @@ export function LeadCard({ lead, onMoveLead }: LeadCardProps) {
       {...listeners}
       className="cursor-grab rounded-lg border border-gray-100 bg-white p-3 shadow-sm transition hover:shadow-md active:cursor-grabbing"
     >
-      <Link href={`/leads/${lead.id}`} className="block" onClick={(e) => isDragging && e.preventDefault()}>
-        <div className="font-medium text-text">{lead.name}</div>
+      <div className="flex items-start justify-between">
+        <Link href={`/leads/${lead.id}`} className="block flex-1" onClick={(e) => isDragging && e.preventDefault()}>
+          <div className="font-medium text-text">{lead.name}</div>
         <div className="mt-1 text-xs text-text-light">{lead.city ?? lead.kommune ?? "—"}</div>
         {lead.industryName && (
           <Badge label={lead.industryName} className="mt-2" />
@@ -61,6 +63,18 @@ export function LeadCard({ lead, onMoveLead }: LeadCardProps) {
           <div className="mt-1 text-xs text-text-light">{lead.employees} ansatte</div>
         )}
       </Link>
+      {onDelete && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onDelete(lead.id); }}
+          className="ml-1 shrink-0 rounded p-0.5 text-gray-300 hover:bg-red-50 hover:text-red-500 transition"
+          title="Slett lead"
+        >
+          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      )}
+      </div>
 
       {onMoveLead && (
         <div className="mt-2 flex items-center justify-between border-t border-gray-50 pt-2">

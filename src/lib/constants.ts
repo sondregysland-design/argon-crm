@@ -31,9 +31,29 @@ export const KOMMUNER = [
 
 export const NACE_CODES = [
   { value: "", label: "Alle bransjer" },
-  // Olje og gass
+  // === OLJE, GASS & ENERGISERVICE ===
   { value: "06", label: "06 — Utvinning av råolje og naturgass" },
+  { value: "06.1", label: "06.1 — Utvinning av råolje" },
+  { value: "06.2", label: "06.2 — Utvinning av naturgass" },
   { value: "09", label: "09 — Tjenester tilknyttet utvinning" },
+  { value: "09.1", label: "09.1 — Servicetjenester til oljeutvinning" },
+  { value: "09.10", label: "09.10 — Tjenester tilknyttet olje- og gassutvinning" },
+  // Subsea, boring, vedlikehold (typisk under 09, 28, 30, 33, 71)
+  { value: "28.99", label: "28.99 — Spesialmaskiner (subsea, brønnverktøy)" },
+  { value: "30.11", label: "30.11 — Bygging av skip og flytende materiell" },
+  { value: "30.113", label: "30.113 — Bygging av oljeplattformer og moduler" },
+  { value: "33.12", label: "33.12 — Reparasjon av maskiner (vedlikehold offshore)" },
+  { value: "33.14", label: "33.14 — Reparasjon av elektrisk utstyr" },
+  { value: "33.20", label: "33.20 — Installasjon av industrimaskiner" },
+  { value: "43.21", label: "43.21 — Elektrisk installasjonsarbeid" },
+  { value: "43.22", label: "43.22 — VVS-arbeid" },
+  { value: "43.29", label: "43.29 — Annet installasjonsarbeid" },
+  { value: "43.99", label: "43.99 — Annen spesialisert bygge- og anleggsvirksomhet" },
+  { value: "46.69", label: "46.69 — Engroshandel med maskiner og utstyr" },
+  { value: "52.22", label: "52.22 — Tjenester tilknyttet sjøtransport (supply)" },
+  { value: "71.12", label: "71.12 — Teknisk konsulentvirksomhet (engineering)" },
+  { value: "71.20", label: "71.20 — Teknisk prøving og analyse (inspeksjon)" },
+  { value: "74.90", label: "74.90 — Annen teknisk virksomhet (NDT, ROV)" },
   // Industri
   { value: "10", label: "10 — Næringsmiddelindustri" },
   { value: "20", label: "20 — Kjemisk industri" },

@@ -24,9 +24,10 @@ interface KanbanColumnProps {
   leads: Lead[];
   onDeleteAll?: () => void;
   onMoveLead?: (leadId: number, newStage: string) => void;
+  onDeleteLead?: (leadId: number) => void;
 }
 
-export function KanbanColumn({ stage, leads, onDeleteAll, onMoveLead }: KanbanColumnProps) {
+export function KanbanColumn({ stage, leads, onDeleteAll, onMoveLead, onDeleteLead }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id: stage });
 
   return (
@@ -48,7 +49,7 @@ export function KanbanColumn({ stage, leads, onDeleteAll, onMoveLead }: KanbanCo
       <div ref={setNodeRef} className="flex flex-1 flex-col gap-2 p-2">
         <SortableContext items={leads.map((l) => l.id)} strategy={verticalListSortingStrategy}>
           {leads.map((lead) => (
-            <LeadCard key={lead.id} lead={lead} onMoveLead={onMoveLead} />
+            <LeadCard key={lead.id} lead={lead} onMoveLead={onMoveLead} onDelete={onDeleteLead} />
           ))}
         </SortableContext>
       </div>

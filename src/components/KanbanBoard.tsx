@@ -40,6 +40,11 @@ export function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
     }
   }
 
+  function deleteLead(leadId: number) {
+    setLeads((prev) => prev.filter((l) => l.id !== leadId));
+    fetch(`/api/leads/${leadId}`, { method: "DELETE" }).catch(() => {});
+  }
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over) return;
@@ -61,6 +66,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
             leads={leads.filter((l) => l.stage === stage)}
             onDeleteAll={stage === "ny" ? () => deleteAllInStage("ny") : undefined}
             onMoveLead={moveLead}
+            onDeleteLead={deleteLead}
           />
         ))}
       </div>
