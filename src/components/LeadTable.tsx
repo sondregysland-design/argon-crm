@@ -7,10 +7,13 @@ interface SearchResult {
   name: string;
   industryCode: string | null;
   industryName: string | null;
+  address: string | null;
+  postalCode: string | null;
   city: string | null;
   kommune: string | null;
   employees: number | null;
   website: string | null;
+  foundedDate: string | null;
 }
 
 interface LeadTableProps {

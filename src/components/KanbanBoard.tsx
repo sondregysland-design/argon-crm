@@ -16,10 +16,10 @@ export function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
     if (!over) return;
 
     const leadId = active.id as number;
-    const newStage = over.id as string;
+    const newStage = over.id as typeof STAGES[number];
 
     // Only handle drops on columns
-    if (!STAGES.includes(newStage as typeof STAGES[number])) return;
+    if (!STAGES.includes(newStage)) return;
 
     const lead = leads.find((l) => l.id === leadId);
     if (!lead || lead.stage === newStage) return;
