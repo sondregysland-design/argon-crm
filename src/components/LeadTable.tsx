@@ -32,24 +32,25 @@ export function LeadTable({ results, onAddLead, addingOrgNr }: LeadTableProps) {
       <table className="w-full text-left text-sm">
         <thead className="border-b border-gray-100 bg-gray-50/50">
           <tr>
-            <th className="px-4 py-3 font-medium text-text-light">Bedrift</th>
-            <th className="px-4 py-3 font-medium text-text-light">Bransje</th>
-            <th className="px-4 py-3 font-medium text-text-light">Sted</th>
-            <th className="px-4 py-3 font-medium text-text-light">Ansatte</th>
-            <th className="px-4 py-3 font-medium text-text-light"></th>
+            <th className="px-3 py-3 font-medium text-text-light sm:px-4">Bedrift</th>
+            <th className="hidden px-4 py-3 font-medium text-text-light sm:table-cell">Bransje</th>
+            <th className="hidden px-4 py-3 font-medium text-text-light sm:table-cell">Sted</th>
+            <th className="hidden px-4 py-3 font-medium text-text-light md:table-cell">Ansatte</th>
+            <th className="px-3 py-3 font-medium text-text-light sm:px-4"></th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-50">
           {results.map((r) => (
             <tr key={r.orgNumber} className="hover:bg-gray-50/50">
-              <td className="px-4 py-3">
+              <td className="px-3 py-3 sm:px-4">
                 <div className="font-medium text-text">{r.name}</div>
                 <div className="text-xs text-text-light">{r.orgNumber}</div>
+                <div className="mt-0.5 text-xs text-text-light sm:hidden">{r.city ?? r.kommune ?? ""}</div>
               </td>
-              <td className="px-4 py-3 text-text-light">{r.industryName ?? "—"}</td>
-              <td className="px-4 py-3 text-text-light">{r.city ?? r.kommune ?? "—"}</td>
-              <td className="px-4 py-3 text-text-light">{r.employees ?? "—"}</td>
-              <td className="px-4 py-3">
+              <td className="hidden px-4 py-3 text-text-light sm:table-cell">{r.industryName ?? "—"}</td>
+              <td className="hidden px-4 py-3 text-text-light sm:table-cell">{r.city ?? r.kommune ?? "—"}</td>
+              <td className="hidden px-4 py-3 text-text-light md:table-cell">{r.employees ?? "—"}</td>
+              <td className="px-3 py-3 sm:px-4">
                 <Button
                   variant="secondary"
                   onClick={() => onAddLead(r)}

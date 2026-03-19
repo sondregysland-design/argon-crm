@@ -22,25 +22,25 @@ export function SearchFilters({ onSearch, loading }: SearchFiltersProps) {
           naeringskode: fd.get("naeringskode") as string,
         });
       }}
-      className="flex flex-wrap items-end gap-4"
+      className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:gap-4"
     >
-      <div className="min-w-[200px] flex-1">
+      <div className="w-full sm:min-w-[200px] sm:flex-1">
         <label className="mb-1 block text-sm font-medium text-text">Bedriftsnavn</label>
         <Input name="navn" placeholder="Søk etter navn..." />
       </div>
-      <div className="w-48">
+      <div className="w-full sm:w-48">
         <label className="mb-1 block text-sm font-medium text-text">Kommune</label>
         <Select name="kommunenummer">
           {KOMMUNER.map((k) => <option key={k.value} value={k.value}>{k.label}</option>)}
         </Select>
       </div>
-      <div className="w-64">
+      <div className="w-full sm:w-64">
         <label className="mb-1 block text-sm font-medium text-text">Bransje (NACE)</label>
         <Select name="naeringskode">
           {NACE_CODES.map((n) => <option key={n.value} value={n.value}>{n.label}</option>)}
         </Select>
       </div>
-      <Button type="submit" disabled={loading}>
+      <Button type="submit" disabled={loading} className="w-full sm:w-auto">
         {loading ? "Søker..." : "Søk"}
       </Button>
     </form>

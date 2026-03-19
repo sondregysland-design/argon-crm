@@ -26,6 +26,8 @@ interface ScrapeConfigProps {
   disabled: boolean;
 }
 
+const isDemo = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
+
 export function ScrapeConfig({ onStart, disabled }: ScrapeConfigProps) {
   return (
     <form
@@ -45,18 +47,18 @@ export function ScrapeConfig({ onStart, disabled }: ScrapeConfigProps) {
       }}
       className="space-y-4"
     >
-      <div className="flex flex-wrap items-end gap-4">
-        <div className="min-w-[200px] flex-1">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:gap-4">
+        <div className="w-full sm:min-w-[200px] sm:flex-1">
           <label className="mb-1 block text-sm font-medium text-text">Bedriftsnavn</label>
           <Input name="navn" placeholder="Valgfritt nøkkelord..." />
         </div>
-        <div className="w-48">
+        <div className="w-full sm:w-48">
           <label className="mb-1 block text-sm font-medium text-text">Kommune</label>
           <Select name="kommunenummer">
             {KOMMUNER.map((k) => <option key={k.value} value={k.value}>{k.label}</option>)}
           </Select>
         </div>
-        <div className="w-64">
+        <div className="w-full sm:w-64">
           <label className="mb-1 block text-sm font-medium text-text">Bransje (NACE)</label>
           <Select name="naeringskode">
             {NACE_CODES.map((n) => <option key={n.value} value={n.value}>{n.label}</option>)}
@@ -64,25 +66,38 @@ export function ScrapeConfig({ onStart, disabled }: ScrapeConfigProps) {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-end gap-4">
-        <div className="w-36">
-          <label className="mb-1 block text-sm font-medium text-text">Min ansatte</label>
-          <Input name="fraAntallAnsatte" type="number" placeholder="0" min={0} />
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:gap-4">
+        <div className="grid grid-cols-2 gap-3 sm:contents">
+          <div className="w-full sm:w-36">
+            <label className="mb-1 block text-sm font-medium text-text">Min ansatte</label>
+            <Input name="fraAntallAnsatte" type="number" placeholder="0" min={0} />
+          </div>
+          <div className="w-full sm:w-36">
+            <label className="mb-1 block text-sm font-medium text-text">Maks ansatte</label>
+            <Input name="tilAntallAnsatte" type="number" placeholder="Ingen grense" min={0} />
+          </div>
         </div>
-        <div className="w-36">
-          <label className="mb-1 block text-sm font-medium text-text">Maks ansatte</label>
-          <Input name="tilAntallAnsatte" type="number" placeholder="Ingen grense" min={0} />
-        </div>
-        <div className="w-40">
+        <div className="w-full sm:w-40">
           <label className="mb-1 block text-sm font-medium text-text">Maks leads</label>
           <Select name="maxLeads" defaultValue="100">
             {MAX_LEADS_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
           </Select>
         </div>
-        <Button type="submit" disabled={disabled}>
+        <Button type="submit" disabled={disabled || isDemo} className="w-full sm:w-auto">
           {disabled ? "Scraper..." : "Start scraping"}
         </Button>
       </div>
+
+      {isDemo && (
+        <div className="flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <svg className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p className="text-sm text-blue-800">
+            Scraping-funksjonen er skrudd av for demobruk. Ønsker du en demonstrasjon? Ta kontakt med en av våre kunderepresentanter.
+          </p>
+        </div>
+      )}
     </form>
   );
 }

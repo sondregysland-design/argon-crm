@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,11 +11,11 @@ const navItems = [
   { href: "/jobber", label: "Jobber", icon: "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" },
 ];
 
-export function Sidebar() {
+function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-gray-200 bg-white">
+    <>
       <div className="flex h-16 items-center gap-2 border-b border-gray-100 px-6">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white">
           A
@@ -29,6 +30,7 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavigate}
               className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
                 active
                   ? "bg-blue-50 text-primary"
@@ -43,6 +45,40 @@ export function Sidebar() {
           );
         })}
       </nav>
-    </aside>
+    </>
+  );
+}
+
+export function Sidebar() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      {/* Mobile header bar */}
+      <div className="fixed inset-x-0 top-0 z-50 flex h-14 items-center gap-3 border-b border-gray-200 bg-white px-4 md:hidden">
+        <button onClick={() => setOpen(true)} className="rounded-lg p-1.5 text-text-light hover:bg-gray-100">
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+        <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-xs font-bold text-white">A</div>
+        <span className="font-semibold text-text">Argon CRM</span>
+      </div>
+
+      {/* Mobile overlay */}
+      {open && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div className="absolute inset-0 bg-black/30" onClick={() => setOpen(false)} />
+          <aside className="absolute inset-y-0 left-0 flex w-64 flex-col bg-white shadow-xl">
+            <SidebarContent onNavigate={() => setOpen(false)} />
+          </aside>
+        </div>
+      )}
+
+      {/* Desktop sidebar */}
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-gray-200 bg-white md:flex">
+        <SidebarContent />
+      </aside>
+    </>
   );
 }

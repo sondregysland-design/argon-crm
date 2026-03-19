@@ -44,25 +44,25 @@ export function JobStatusTable({ jobs: initialJobs }: { jobs: ScrapeJob[] }) {
       <table className="w-full text-left text-sm">
         <thead className="border-b border-gray-100 bg-gray-50/50">
           <tr>
-            <th className="px-4 py-3 font-medium text-text-light">Jobb</th>
-            <th className="px-4 py-3 font-medium text-text-light">Status</th>
-            <th className="px-4 py-3 font-medium text-text-light">Cron</th>
-            <th className="px-4 py-3 font-medium text-text-light">Sist kjørt</th>
-            <th className="px-4 py-3 font-medium text-text-light">Behandlet</th>
-            <th className="px-4 py-3 font-medium text-text-light"></th>
+            <th className="px-3 py-3 font-medium text-text-light sm:px-4">Jobb</th>
+            <th className="px-3 py-3 font-medium text-text-light sm:px-4">Status</th>
+            <th className="hidden px-4 py-3 font-medium text-text-light sm:table-cell">Cron</th>
+            <th className="hidden px-4 py-3 font-medium text-text-light md:table-cell">Sist kjørt</th>
+            <th className="hidden px-4 py-3 font-medium text-text-light md:table-cell">Behandlet</th>
+            <th className="px-3 py-3 font-medium text-text-light sm:px-4"></th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-50">
           {jobs.map((job) => (
             <tr key={job.id}>
-              <td className="px-4 py-3 font-medium text-text">{jobLabels[job.name] ?? job.name}</td>
-              <td className="px-4 py-3"><Badge label={job.status} /></td>
-              <td className="px-4 py-3 text-text-light font-mono text-xs">{job.cronExpression}</td>
-              <td className="px-4 py-3 text-text-light">
+              <td className="px-3 py-3 font-medium text-text sm:px-4">{jobLabels[job.name] ?? job.name}</td>
+              <td className="px-3 py-3 sm:px-4"><Badge label={job.status} /></td>
+              <td className="hidden px-4 py-3 text-text-light font-mono text-xs sm:table-cell">{job.cronExpression}</td>
+              <td className="hidden px-4 py-3 text-text-light md:table-cell">
                 {job.lastRunAt ? new Date(job.lastRunAt).toLocaleString("nb-NO") : "Aldri"}
               </td>
-              <td className="px-4 py-3 text-text-light">{job.recordsProcessed ?? "—"}</td>
-              <td className="px-4 py-3">
+              <td className="hidden px-4 py-3 text-text-light md:table-cell">{job.recordsProcessed ?? "—"}</td>
+              <td className="px-3 py-3 sm:px-4">
                 <Button
                   variant="ghost"
                   className="text-xs"

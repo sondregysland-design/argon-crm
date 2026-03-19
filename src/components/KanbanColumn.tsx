@@ -31,7 +31,7 @@ export function KanbanColumn({ stage, leads, onDeleteAll, onMoveLead, onDeleteLe
   const { setNodeRef, isOver } = useDroppable({ id: stage });
 
   return (
-    <div className={`flex min-h-[400px] flex-col rounded-xl bg-gray-50 ${isOver ? "ring-2 ring-primary/30" : ""}`}>
+    <div className={`flex min-h-[200px] flex-col rounded-xl bg-gray-50 md:min-h-[400px] ${isOver ? "ring-2 ring-primary/30" : ""}`}>
       <div className="flex items-center gap-2 p-3">
         <div className={`h-2.5 w-2.5 rounded-full ${stageHeaderColors[stage]}`} />
         <h3 className="text-sm font-semibold text-text">{stageLabels[stage]}</h3>

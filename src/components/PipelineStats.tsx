@@ -22,7 +22,7 @@ export function PipelineStats({ leads }: { leads: Lead[] }) {
   }
 
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
       {Object.entries(counts).map(([stage, count]) => (
         <Card key={stage} className="p-4">
           <div className={`text-2xl font-bold ${stageColors[stage]}`}>{count}</div>

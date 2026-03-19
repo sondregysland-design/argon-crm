@@ -58,7 +58,7 @@ export function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
         {STAGES.map((stage) => (
           <KanbanColumn
             key={stage}
