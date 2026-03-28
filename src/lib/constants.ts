@@ -29,6 +29,25 @@ export const KOMMUNER = [
   { value: "3901", label: "Porsgrunn" },
 ];
 
+export const PROJECT_TYPES = [
+  { value: "", label: "Velg prosjekttype" },
+  { value: "consulting", label: "Rådgivning" },
+  { value: "inspection", label: "Inspeksjon" },
+  { value: "engineering", label: "Ingeniør" },
+  { value: "maintenance", label: "Vedlikehold" },
+  { value: "installation", label: "Installasjon" },
+  { value: "commissioning", label: "Igangkjøring" },
+];
+
+export const PROJECT_TYPE_LABELS: Record<string, string> = {
+  consulting: "Rådgivning",
+  inspection: "Inspeksjon",
+  engineering: "Ingeniør",
+  maintenance: "Vedlikehold",
+  installation: "Installasjon",
+  commissioning: "Igangkjøring",
+};
+
 export const NACE_CODES = [
   { value: "", label: "Alle bransjer" },
   // === OLJE, GASS & ENERGISERVICE ===

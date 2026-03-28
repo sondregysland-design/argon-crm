@@ -5,6 +5,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Badge } from "@/components/ui/Badge";
 import Link from "next/link";
 import type { Lead } from "@/lib/db/schema";
+import { PROJECT_TYPE_LABELS } from "@/lib/constants";
 
 const STAGES = ["ny", "kontaktet", "kvalifisert", "kunde"] as const;
 
@@ -58,6 +59,9 @@ export function LeadCard({ lead, onMoveLead, onDelete }: LeadCardProps) {
         <div className="mt-1 text-xs text-text-light">{lead.city ?? lead.kommune ?? "—"}</div>
         {lead.industryName && (
           <Badge label={lead.industryName} className="mt-2" />
+        )}
+        {lead.projectType && (
+          <Badge label={PROJECT_TYPE_LABELS[lead.projectType] || lead.projectType} className="mt-1" />
         )}
         {lead.employees != null && lead.employees > 0 && (
           <div className="mt-1 text-xs text-text-light">{lead.employees} ansatte</div>

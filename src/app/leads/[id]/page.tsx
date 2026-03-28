@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/Badge";
 import { ActivityLog } from "@/components/ActivityLog";
 import { formatOrgNumber } from "@/lib/utils";
 import { EditableField } from "@/components/EditableField";
+import { EditableSelectField } from "@/components/EditableSelectField";
+import { PROJECT_TYPES, PROJECT_TYPE_LABELS } from "@/lib/constants";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -67,6 +69,34 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
                   <dd className="font-medium text-text">{value || "—"}</dd>
                 </div>
               ))}
+            </dl>
+          </Card>
+
+          <Card>
+            <h2 className="mb-4 text-lg font-semibold text-text">Prosjekt & Salg</h2>
+            <dl className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+              <div className="group">
+                <EditableSelectField
+                  leadId={lead.id}
+                  field="projectType"
+                  value={lead.projectType}
+                  label="Prosjekttype"
+                  options={PROJECT_TYPES}
+                  displayLabel={lead.projectType ? PROJECT_TYPE_LABELS[lead.projectType] : undefined}
+                />
+              </div>
+              <div className="group">
+                <EditableField leadId={lead.id} field="quote" value={lead.quote} label="Tilbud (NOK)" type="number" />
+              </div>
+              <div className="group">
+                <EditableField leadId={lead.id} field="meetingUrl" value={lead.meetingUrl} label="Møte-URL" type="url" />
+              </div>
+              <div className="group">
+                <EditableField leadId={lead.id} field="discoveryUrl" value={lead.discoveryUrl} label="Discovery-URL" type="url" />
+              </div>
+              <div className="group">
+                <EditableField leadId={lead.id} field="proposalUrl" value={lead.proposalUrl} label="Tilbuds-URL" type="url" />
+              </div>
             </dl>
           </Card>
 
