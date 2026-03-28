@@ -1,6 +1,5 @@
 import { db } from "@/lib/db";
 import { leads } from "@/lib/db/schema";
-import { PipelineStats } from "@/components/PipelineStats";
 import { KanbanBoard } from "@/components/KanbanBoard";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +14,6 @@ export default async function DashboardPage() {
         <p className="mt-1 text-text-light">Oversikt over salgspipeline.</p>
       </div>
 
-      <PipelineStats leads={allLeads} />
       <KanbanBoard initialLeads={allLeads} />
     </div>
   );
