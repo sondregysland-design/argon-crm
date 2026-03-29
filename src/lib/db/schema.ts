@@ -67,7 +67,33 @@ export const searchCache = sqliteTable("search_cache", {
   fetchedAt: text("fetched_at").notNull(),
 });
 
+export const emailThreads = sqliteTable("email_threads", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  leadId: integer("lead_id").notNull().references(() => leads.id, { onDelete: "cascade" }),
+  gmailThreadId: text("gmail_thread_id"),
+  gmailMessageId: text("gmail_message_id"),
+  subject: text("subject").notNull(),
+  followUpCount: integer("follow_up_count").notNull().default(0),
+  nextFollowUpAt: text("next_follow_up_at"),
+  autoSend: integer("auto_send").notNull().default(1),
+  status: text("status", { enum: ["active", "replied", "completed", "paused"] }).notNull().default("active"),
+  lastEmailContent: text("last_email_content"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const pendingFollowups = sqliteTable("pending_followups", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  emailThreadId: integer("email_thread_id").notNull().references(() => emailThreads.id, { onDelete: "cascade" }),
+  generatedContent: text("generated_content").notNull(),
+  status: text("status", { enum: ["pending", "approved", "rejected"] }).notNull().default("pending"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
 export type Lead = typeof leads.$inferSelect;
 export type NewLead = typeof leads.$inferInsert;
 export type Activity = typeof activities.$inferSelect;
 export type ScrapeJob = typeof scrapeJobs.$inferSelect;
+export type EmailThread = typeof emailThreads.$inferSelect;
+export type NewEmailThread = typeof emailThreads.$inferInsert;
+export type PendingFollowup = typeof pendingFollowups.$inferSelect;
