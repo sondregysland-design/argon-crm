@@ -10,6 +10,8 @@ import { EditableField } from "@/components/EditableField";
 import { EditableSelectField } from "@/components/EditableSelectField";
 import { PROJECT_TYPES, PROJECT_TYPE_LABELS } from "@/lib/constants";
 import Link from "next/link";
+import { EmailComposer } from "@/components/EmailComposer";
+import { FollowUpStatus } from "@/components/FollowUpStatus";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +34,7 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
           <p className="text-sm text-text-light">{formatOrgNumber(lead.orgNumber)}</p>
         </div>
         <Badge label={lead.stage} className="ml-auto" />
+        <EmailComposer leadId={lead.id} leadName={lead.name} hasEmail={!!lead.email} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -114,6 +117,9 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
               <div>Proff.no: {lead.proffSyncedAt ? new Date(lead.proffSyncedAt).toLocaleDateString("nb-NO") : "Ikke synkronisert"}</div>
               <div>Google: {lead.googleSyncedAt ? new Date(lead.googleSyncedAt).toLocaleDateString("nb-NO") : "Ikke synkronisert"}</div>
             </div>
+          </Card>
+          <Card className="p-4">
+            <FollowUpStatus leadId={lead.id} />
           </Card>
         </div>
       </div>
