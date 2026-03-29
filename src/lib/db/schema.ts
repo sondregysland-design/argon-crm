@@ -42,7 +42,7 @@ export const leads = sqliteTable("leads", {
 export const activities = sqliteTable("activities", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   leadId: integer("lead_id").notNull().references(() => leads.id, { onDelete: "cascade" }),
-  type: text("type", { enum: ["note", "email", "call", "stage_change", "data_enriched"] }).notNull(),
+  type: text("type", { enum: ["note", "email", "call", "stage_change", "data_enriched", "quote"] }).notNull(),
   description: text("description").notNull(),
   metadata: text("metadata"),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
@@ -90,6 +90,34 @@ export const pendingFollowups = sqliteTable("pending_followups", {
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
+export const products = sqliteTable("products", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
+  description: text("description"),
+  unit: text("unit", { enum: ["stk", "time", "måned", "prosjekt"] }).notNull().default("stk"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const quotes = sqliteTable("quotes", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  quoteNumber: text("quote_number").unique().notNull(),
+  leadId: integer("lead_id").references(() => leads.id),
+  status: text("status", { enum: ["utkast", "sendt", "akseptert", "avvist"] }).notNull().default("utkast"),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const quoteItems = sqliteTable("quote_items", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  quoteId: integer("quote_id").notNull().references(() => quotes.id, { onDelete: "cascade" }),
+  productId: integer("product_id").notNull().references(() => products.id),
+  quantity: integer("quantity").notNull().default(1),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
 export type Lead = typeof leads.$inferSelect;
 export type NewLead = typeof leads.$inferInsert;
 export type Activity = typeof activities.$inferSelect;
@@ -97,3 +125,8 @@ export type ScrapeJob = typeof scrapeJobs.$inferSelect;
 export type EmailThread = typeof emailThreads.$inferSelect;
 export type NewEmailThread = typeof emailThreads.$inferInsert;
 export type PendingFollowup = typeof pendingFollowups.$inferSelect;
+export type Product = typeof products.$inferSelect;
+export type NewProduct = typeof products.$inferInsert;
+export type Quote = typeof quotes.$inferSelect;
+export type NewQuote = typeof quotes.$inferInsert;
+export type QuoteItem = typeof quoteItems.$inferSelect;
