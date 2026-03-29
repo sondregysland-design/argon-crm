@@ -127,3 +127,25 @@ export const NACE_CODES = [
   // Undervisning
   { value: "85", label: "85 — Undervisning" },
 ];
+
+export const PRODUCT_UNITS = [
+  { value: "stk", label: "Stk" },
+  { value: "time", label: "Time" },
+  { value: "måned", label: "Måned" },
+  { value: "prosjekt", label: "Prosjekt" },
+];
+
+export const QUOTE_STATUSES = [
+  { value: "", label: "Alle statuser" },
+  { value: "utkast", label: "Utkast" },
+  { value: "sendt", label: "Sendt" },
+  { value: "akseptert", label: "Akseptert" },
+  { value: "avvist", label: "Avvist" },
+];
+
+export const QUOTE_STATUS_LABELS: Record<string, string> = {
+  utkast: "Utkast",
+  sendt: "Sendt",
+  akseptert: "Akseptert",
+  avvist: "Avvist",
+};
