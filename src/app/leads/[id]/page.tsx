@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { leads, activities } from "@/lib/db/schema";
+import { leads, activities, quotes } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { Card } from "@/components/ui/Card";
@@ -12,6 +12,7 @@ import { PROJECT_TYPES, PROJECT_TYPE_LABELS } from "@/lib/constants";
 import Link from "next/link";
 import { EmailComposer } from "@/components/EmailComposer";
 import { FollowUpStatus } from "@/components/FollowUpStatus";
+import { LeadQuotes } from "@/components/LeadQuotes";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,13 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
     .where(eq(activities.leadId, lead.id))
     .orderBy(desc(activities.createdAt))
     .all();
+
+  const leadQuotes = await db.select({
+    id: quotes.id,
+    quoteNumber: quotes.quoteNumber,
+    status: quotes.status,
+    createdAt: quotes.createdAt,
+  }).from(quotes).where(eq(quotes.leadId, lead.id)).orderBy(desc(quotes.createdAt)).all();
 
   return (
     <div className="space-y-6">
@@ -120,6 +128,9 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
           </Card>
           <Card className="p-4">
             <FollowUpStatus leadId={lead.id} />
+          </Card>
+          <Card className="p-4">
+            <LeadQuotes leadId={lead.id} quotes={leadQuotes} />
           </Card>
         </div>
       </div>
