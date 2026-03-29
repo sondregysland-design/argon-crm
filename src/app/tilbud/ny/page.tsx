@@ -1,6 +1,5 @@
 import { db } from "@/lib/db";
 import { products, leads } from "@/lib/db/schema";
-import { desc } from "drizzle-orm";
 import { CreateQuoteForm } from "./CreateQuoteForm";
 
 export const dynamic = "force-dynamic";

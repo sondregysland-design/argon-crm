@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { QuoteStatusActions } from "@/components/QuoteStatusActions";
 import { QuotePdfDownload } from "@/components/QuotePdfDownload";
+import { QuoteItemsEditor } from "@/components/QuoteItemsEditor";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -30,6 +31,11 @@ export default async function TilbudDetailPage({ params }: { params: Promise<{ i
     .leftJoin(products, eq(quoteItems.productId, products.id))
     .where(eq(quoteItems.quoteId, quote.id))
     .orderBy(quoteItems.sortOrder)
+    .all();
+
+  const allProducts = await db.select({ id: products.id, name: products.name })
+    .from(products)
+    .orderBy(products.name)
     .all();
 
   let lead = null;
@@ -90,6 +96,17 @@ export default async function TilbudDetailPage({ params }: { params: Promise<{ i
                 </tr>
               </tfoot>
             </table>
+
+            {quote.status === "utkast" && (
+              <div className="mt-4 border-t border-gray-100 pt-4">
+                <h3 className="mb-3 text-sm font-semibold text-text">Rediger produkter</h3>
+                <QuoteItemsEditor
+                  quoteId={quote.id}
+                  products={allProducts}
+                  items={items.map((i) => ({ id: i.id, productName: i.productName }))}
+                />
+              </div>
+            )}
           </Card>
 
           {quote.notes && (
