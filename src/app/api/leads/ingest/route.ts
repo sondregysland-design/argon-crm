@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { searchBrreg } from "@/lib/scrapers/brreg";
 
 export async function POST(request: NextRequest) {
+  try {
   let body: {
     name: string;
     email: string;
@@ -190,4 +191,11 @@ export async function POST(request: NextRequest) {
     { lead: newLead, action: "created", enriched: !!brregData.orgNumber },
     { status: 201 }
   );
+  } catch (error) {
+    console.error("Ingest error:", error);
+    return NextResponse.json(
+      { error: "Intern feil", details: error instanceof Error ? error.message : String(error) },
+      { status: 500 }
+    );
+  }
 }
