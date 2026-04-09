@@ -23,6 +23,11 @@ const stageArrowColors: Record<string, string> = {
   kunde: "text-emerald-400 hover:text-emerald-600",
 };
 
+const sourceBorderColors: Record<string, string> = {
+  calendar: "border-l-4 border-l-green-500",
+  "contact-form": "border-l-4 border-l-blue-500",
+};
+
 interface LeadCardProps {
   lead: Lead;
   onMoveLead?: (leadId: number, newStage: string) => void;
@@ -51,15 +56,17 @@ export function LeadCard({ lead, onMoveLead, onDelete }: LeadCardProps) {
       style={style}
       {...attributes}
       {...listeners}
-      className="cursor-grab rounded-lg border border-gray-100 bg-white p-3 shadow-sm transition hover:shadow-md active:cursor-grabbing"
+      className={`cursor-grab rounded-lg border border-gray-100 bg-white p-3 shadow-sm transition hover:shadow-md active:cursor-grabbing ${sourceBorderColors[lead.source ?? ""] ?? ""}`}
     >
       <div className="flex items-start justify-between">
         <Link href={`/leads/${lead.id}`} className="block flex-1" onClick={(e) => isDragging && e.preventDefault()}>
           <div className="font-medium text-text">{lead.name}</div>
         <div className="mt-1 text-xs text-text-light">{lead.city ?? lead.kommune ?? "—"}</div>
-        {lead.industryName && (
-          <Badge label={lead.industryName} className="mt-2" />
-        )}
+        {lead.summary ? (
+          <p className="text-xs leading-snug text-text-light line-clamp-2 mt-2">{lead.summary}</p>
+        ) : lead.industryName ? (
+          <span className="inline-block rounded-full bg-blue-50 px-2 py-0.5 text-xs text-blue-700 mt-2">{lead.industryName}</span>
+        ) : null}
         {lead.projectType && (
           <Badge label={PROJECT_TYPE_LABELS[lead.projectType] || lead.projectType} className="mt-1" />
         )}
