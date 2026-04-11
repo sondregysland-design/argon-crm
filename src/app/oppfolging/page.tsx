@@ -34,7 +34,7 @@ export default function OppfolgingPage() {
   async function handleAction(id: number, action: "approve" | "reject") {
     setProcessing(id);
     try {
-      await fetch(`/api/email/pending/${id}`, {
+      const res = await fetch(`/api/email/pending/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -42,6 +42,10 @@ export default function OppfolgingPage() {
           editedContent: editingId === id ? editedContent : undefined,
         }),
       });
+      if (!res.ok) {
+        alert(`Handling feilet: ${res.statusText}`);
+        return;
+      }
       setPending((prev) => prev.filter((p) => p.id !== id));
       setEditingId(null);
     } finally {

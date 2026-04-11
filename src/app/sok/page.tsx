@@ -23,10 +23,12 @@ export default function SokPage() {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [addingOrgNr, setAddingOrgNr] = useState<string | null>(null);
 
   async function handleSearch(filters: { navn: string; kommunenummer: string; naeringskode: string }) {
     setLoading(true);
+    setError(null);
     try {
       const params = new URLSearchParams();
       if (filters.navn) params.set("navn", filters.navn);
@@ -34,11 +36,19 @@ export default function SokPage() {
       if (filters.naeringskode) params.set("naeringskode", filters.naeringskode);
 
       const res = await fetch(`/api/sok?${params}`);
+      if (!res.ok) {
+        setError("Søket feilet. Prøv igjen eller juster søkekriteriene.");
+        setResults([]);
+        setTotal(0);
+        return;
+      }
       const data = await res.json();
       setResults(data.results ?? []);
       setTotal(data.total ?? 0);
     } catch {
-      console.error("Søk feilet");
+      setError("Kunne ikke koble til søketjenesten. Sjekk nettverksforbindelsen.");
+      setResults([]);
+      setTotal(0);
     } finally {
       setLoading(false);
     }
@@ -72,6 +82,12 @@ export default function SokPage() {
       <Card>
         <SearchFilters onSearch={handleSearch} loading={loading} />
       </Card>
+
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
 
       {total > 0 && (
         <p className="text-sm text-text-light">{total} treff totalt</p>

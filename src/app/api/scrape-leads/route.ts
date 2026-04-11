@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
                   foundedDate: mapped.foundedDate,
                 }).returning();
 
-                db.insert(activities).values({
+                await db.insert(activities).values({
                   leadId: newLead.id,
                   type: "data_enriched",
                   description: "Lagt til via auto-scrape",

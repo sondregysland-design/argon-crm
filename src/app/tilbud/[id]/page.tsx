@@ -26,6 +26,7 @@ export default async function TilbudDetailPage({ params }: { params: Promise<{ i
     productName: products.name,
     productDescription: products.description,
     productUnit: products.unit,
+    productPrice: products.price,
   })
     .from(quoteItems)
     .leftJoin(products, eq(quoteItems.productId, products.id))
@@ -80,7 +81,11 @@ export default async function TilbudDetailPage({ params }: { params: Promise<{ i
                     </td>
                     <td className="py-3 text-text-light">{item.quantity}</td>
                     <td className="py-3 text-text-light">{unitLabels[item.productUnit ?? "stk"]}</td>
-                    <td className="py-3 text-text-light">XX kr</td>
+                    <td className="py-3 text-text-light">
+                      {item.productPrice != null
+                        ? `${(item.productPrice * item.quantity).toLocaleString("nb-NO")} kr`
+                        : "—"}
+                    </td>
                   </tr>
                 ))}
                 {items.length === 0 && (
@@ -92,7 +97,11 @@ export default async function TilbudDetailPage({ params }: { params: Promise<{ i
               <tfoot>
                 <tr className="border-t border-gray-200">
                   <td colSpan={3} className="pt-3 text-right font-semibold text-text">Totalsum:</td>
-                  <td className="pt-3 font-semibold text-text">XX kr</td>
+                  <td className="pt-3 font-semibold text-text">
+                    {items.every((i) => i.productPrice != null)
+                      ? `${items.reduce((sum, i) => sum + (i.productPrice ?? 0) * i.quantity, 0).toLocaleString("nb-NO")} kr`
+                      : "—"}
+                  </td>
                 </tr>
               </tfoot>
             </table>
@@ -132,6 +141,7 @@ export default async function TilbudDetailPage({ params }: { params: Promise<{ i
                   name: i.productName ?? "",
                   quantity: i.quantity,
                   unit: unitLabels[i.productUnit ?? "stk"],
+                  price: i.productPrice,
                 }))}
                 notes={quote.notes}
               />

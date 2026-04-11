@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
     name: body.name,
     description: body.description ?? null,
     unit: body.unit ?? "stk",
+    price: body.price ?? null,
   }).returning();
   return NextResponse.json(result[0], { status: 201 });
 }

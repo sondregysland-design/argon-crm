@@ -259,7 +259,15 @@ export function ProductsClient({ initialProducts }: { initialProducts: Product[]
                     onUpdated={handleUpdated}
                   />
                 </td>
-                <td className="py-3 text-text-light">XX kr</td>
+                <td className="py-3 text-text-light">
+                  <EditableCell
+                    productId={p.id}
+                    field="price"
+                    value={p.price != null ? String(p.price) : ""}
+                    onUpdated={handleUpdated}
+                    displayValue={p.price != null ? `${p.price.toLocaleString("nb-NO")} kr` : "—"}
+                  />
+                </td>
                 <td className="py-3 text-right">
                   <button
                     onClick={() => handleDelete(p.id)}

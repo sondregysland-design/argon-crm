@@ -9,7 +9,7 @@ interface QuotePdfDownloadProps {
   leadName?: string;
   leadOrgNumber?: string;
   leadAddress?: string;
-  items: { name: string; quantity: number; unit: string }[];
+  items: { name: string; quantity: number; unit: string; price?: number | null }[];
   notes?: string | null;
 }
 
@@ -87,14 +87,20 @@ export function QuotePdfDownload({
                 <td style={{ padding: "8px 0" }}>{item.name}</td>
                 <td style={{ padding: "8px 0" }}>{item.quantity}</td>
                 <td style={{ padding: "8px 0" }}>{item.unit}</td>
-                <td style={{ padding: "8px 0", textAlign: "right" }}>XX kr</td>
+                <td style={{ padding: "8px 0", textAlign: "right" }}>
+                  {item.price != null ? `${(item.price * item.quantity).toLocaleString("nb-NO")} kr` : "—"}
+                </td>
               </tr>
             ))}
           </tbody>
           <tfoot>
             <tr style={{ borderTop: "2px solid #E2E8F0" }}>
               <td colSpan={3} style={{ padding: "12px 0", textAlign: "right", fontWeight: "bold" }}>Totalsum:</td>
-              <td style={{ padding: "12px 0", textAlign: "right", fontWeight: "bold" }}>XX kr</td>
+              <td style={{ padding: "12px 0", textAlign: "right", fontWeight: "bold" }}>
+                {items.every((i) => i.price != null)
+                  ? `${items.reduce((sum, i) => sum + (i.price ?? 0) * i.quantity, 0).toLocaleString("nb-NO")} kr`
+                  : "—"}
+              </td>
             </tr>
           </tfoot>
         </table>

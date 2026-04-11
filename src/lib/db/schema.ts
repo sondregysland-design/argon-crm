@@ -100,6 +100,7 @@ export const products = sqliteTable("products", {
   name: text("name").notNull(),
   description: text("description"),
   unit: text("unit", { enum: ["stk", "time", "måned", "prosjekt"] }).notNull().default("stk"),
+  price: integer("price"),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });

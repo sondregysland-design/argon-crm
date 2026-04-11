@@ -59,7 +59,7 @@ export function Sidebar() {
     <>
       {/* Mobile header bar */}
       <div className="fixed inset-x-0 top-0 z-50 flex h-14 items-center gap-3 border-b border-gray-200 bg-white px-4 md:hidden">
-        <button onClick={() => setOpen(true)} className="rounded-lg p-1.5 text-text-light hover:bg-gray-100">
+        <button onClick={() => setOpen(true)} aria-label="Åpne meny" className="rounded-lg p-1.5 text-text-light hover:bg-gray-100">
           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
           </svg>

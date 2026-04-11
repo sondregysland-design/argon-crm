@@ -10,6 +10,7 @@ interface LineItem {
   productId: number;
   productName: string;
   productUnit: string;
+  productPrice: number | null;
   quantity: number;
 }
 
@@ -36,7 +37,7 @@ export function CreateQuoteForm({
     if (!product) return;
     setItems((prev) => [
       ...prev,
-      { productId: product.id, productName: product.name, productUnit: product.unit, quantity },
+      { productId: product.id, productName: product.name, productUnit: product.unit, productPrice: product.price ?? null, quantity },
     ]);
     setSelectedProduct("");
     setQuantity(1);
@@ -127,7 +128,11 @@ export function CreateQuoteForm({
                   <td className="py-2 text-text">{item.productName}</td>
                   <td className="py-2 text-text-light">{item.quantity}</td>
                   <td className="py-2 text-text-light">{unitLabels[item.productUnit] ?? item.productUnit}</td>
-                  <td className="py-2 text-text-light">XX kr</td>
+                  <td className="py-2 text-text-light">
+                    {item.productPrice != null
+                      ? `${(item.productPrice * item.quantity).toLocaleString("nb-NO")} kr`
+                      : "—"}
+                  </td>
                   <td className="py-2 text-right">
                     <button onClick={() => removeItem(i)} className="text-red-500 hover:text-red-700">
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -141,7 +146,11 @@ export function CreateQuoteForm({
             <tfoot>
               <tr className="border-t border-gray-200">
                 <td colSpan={3} className="pt-3 text-right font-semibold text-text">Totalsum:</td>
-                <td className="pt-3 font-semibold text-text">XX kr</td>
+                <td className="pt-3 font-semibold text-text">
+                  {items.every((i) => i.productPrice != null)
+                    ? `${items.reduce((sum, i) => sum + (i.productPrice ?? 0) * i.quantity, 0).toLocaleString("nb-NO")} kr`
+                    : "—"}
+                </td>
                 <td></td>
               </tr>
             </tfoot>

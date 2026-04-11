@@ -43,6 +43,13 @@
       "when": 1775760517010,
       "tag": "0005_vengeful_satana",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1776000000000,
+      "tag": "0006_add_product_price",
+      "breakpoints": true
     }
   ]
 }
