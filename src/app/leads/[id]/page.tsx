@@ -55,16 +55,28 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
                 ["NACE-kode", lead.industryCode],
                 ["Adresse", [lead.address, lead.postalCode, lead.city].filter(Boolean).join(", ")],
                 ["Kommune", lead.kommune],
-                ["Nettside", lead.website],
-              ].map(([label, value]) => (
+              ].filter(([, value]) => value).map(([label, value]) => (
                 <div key={label as string}>
                   <dt className="text-text-light">{label}</dt>
-                  <dd className="font-medium text-text">{value || "—"}</dd>
+                  <dd className="font-medium text-text">{value}</dd>
                 </div>
               ))}
-              <div className="group">
-                <EditableField leadId={lead.id} field="phone" value={lead.phone} label="Telefon" />
-              </div>
+              {(lead.website || lead.googleWebsite) && (
+                <div>
+                  <dt className="text-text-light">Nettside</dt>
+                  <dd className="font-medium text-text">
+                    <a href={lead.website || lead.googleWebsite || ""} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                      {(lead.website || lead.googleWebsite || "").replace(/^https?:\/\//, "")}
+                    </a>
+                  </dd>
+                </div>
+              )}
+              {(lead.phone || lead.googlePhone) && (
+                <div>
+                  <dt className="text-text-light">Telefon</dt>
+                  <dd className="font-medium text-text">{lead.phone || lead.googlePhone}</dd>
+                </div>
+              )}
               <div className="group">
                 <EditableField leadId={lead.id} field="email" value={lead.email} label="E-post" />
               </div>
@@ -74,14 +86,43 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
               {[
                 ["Ansatte", lead.employees?.toString()],
                 ["Stiftet", lead.foundedDate],
-              ].map(([label, value]) => (
+              ].filter(([, value]) => value).map(([label, value]) => (
                 <div key={label as string}>
                   <dt className="text-text-light">{label}</dt>
-                  <dd className="font-medium text-text">{value || "—"}</dd>
+                  <dd className="font-medium text-text">{value}</dd>
                 </div>
               ))}
+              {lead.googleRating != null && (
+                <div>
+                  <dt className="text-text-light">Google-vurdering</dt>
+                  <dd className="font-medium text-text">
+                    <span className="text-amber-500">{"★".repeat(Math.round(lead.googleRating))}</span>
+                    <span className="text-gray-300">{"★".repeat(5 - Math.round(lead.googleRating))}</span>
+                    {" "}{lead.googleRating.toFixed(1)}
+                    {lead.googleReviewsCount != null && (
+                      <span className="ml-1 text-text-light">({lead.googleReviewsCount} anmeldelser)</span>
+                    )}
+                  </dd>
+                </div>
+              )}
             </dl>
           </Card>
+
+          {(lead.detailedSummary || lead.summary || lead.notes) && (
+            <Card>
+              <h2 className="mb-4 text-lg font-semibold text-text">Om bedriften</h2>
+              {lead.detailedSummary ? (
+                <p className="text-sm leading-relaxed text-text">{lead.detailedSummary}</p>
+              ) : lead.summary ? (
+                <p className="text-sm font-medium text-text">{lead.summary}</p>
+              ) : null}
+              {lead.notes && (
+                <p className={`text-sm leading-relaxed text-text-light ${lead.detailedSummary || lead.summary ? "mt-3 border-t border-gray-100 pt-3" : ""}`}>
+                  <span className="text-xs font-medium text-text-light">Rådata fra nettside:</span><br />{lead.notes}
+                </p>
+              )}
+            </Card>
+          )}
 
           <Card>
             <h2 className="mb-4 text-lg font-semibold text-text">Prosjekt & Salg</h2>
