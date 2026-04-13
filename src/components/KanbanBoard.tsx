@@ -11,7 +11,14 @@ const STAGES = ["ny", "kontaktet", "kvalifisert", "kunde"] as const;
 export function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
   const [leads, setLeads] = useState(initialLeads);
   const [deleteStage, setDeleteStage] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+
+  const filteredLeads = search
+    ? leads.filter((l) => l.name.toLowerCase().includes(search.toLowerCase()) ||
+        (l.city ?? "").toLowerCase().includes(search.toLowerCase()) ||
+        (l.summary ?? "").toLowerCase().includes(search.toLowerCase()))
+    : leads;
 
   const deleteCount = deleteStage ? leads.filter((l) => l.stage === deleteStage).length : 0;
 
@@ -56,13 +63,22 @@ export function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
 
   return (
     <>
+      <div className="mb-4">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Søk leads..."
+          className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm transition focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:max-w-xs"
+        />
+      </div>
       <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
           {STAGES.map((stage) => (
             <KanbanColumn
               key={stage}
               stage={stage}
-              leads={leads.filter((l) => l.stage === stage)}
+              leads={filteredLeads.filter((l) => l.stage === stage)}
               onDeleteAll={stage === "ny" ? () => setDeleteStage("ny") : undefined}
               onMoveLead={moveLead}
               onDeleteLead={deleteLead}
