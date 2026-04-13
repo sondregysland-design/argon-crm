@@ -20,14 +20,19 @@ interface PendingItem {
 export default function OppfolgingPage() {
   const [pending, setPending] = useState<PendingItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedContent, setEditedContent] = useState("");
   const [processing, setProcessing] = useState<number | null>(null);
 
   useEffect(() => {
     fetch("/api/email/pending")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`Feil: ${r.status}`);
+        return r.json();
+      })
       .then(setPending)
+      .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
   }, []);
 
@@ -59,6 +64,29 @@ export default function OppfolgingPage() {
 
       {loading ? (
         <div className="text-text-light">Laster...</div>
+      ) : error ? (
+        <Card>
+          <div className="py-8 text-center">
+            <p className="text-red-600">{error}</p>
+            <button
+              onClick={() => {
+                setError(null);
+                setLoading(true);
+                fetch("/api/email/pending")
+                  .then((r) => {
+                    if (!r.ok) throw new Error(`Feil: ${r.status}`);
+                    return r.json();
+                  })
+                  .then(setPending)
+                  .catch((e) => setError(e.message))
+                  .finally(() => setLoading(false));
+              }}
+              className="mt-3 text-sm text-primary hover:underline"
+            >
+              Prøv igjen
+            </button>
+          </div>
+        </Card>
       ) : pending.length === 0 ? (
         <Card>
           <div className="py-8 text-center text-text-light">
