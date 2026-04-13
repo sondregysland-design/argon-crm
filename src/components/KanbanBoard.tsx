@@ -3,13 +3,17 @@
 import { useState } from "react";
 import { DndContext, DragEndEvent, closestCorners, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { KanbanColumn } from "@/components/KanbanColumn";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import type { Lead } from "@/lib/db/schema";
 
 const STAGES = ["ny", "kontaktet", "kvalifisert", "kunde"] as const;
 
 export function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
   const [leads, setLeads] = useState(initialLeads);
+  const [deleteStage, setDeleteStage] = useState<string | null>(null);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+
+  const deleteCount = deleteStage ? leads.filter((l) => l.stage === deleteStage).length : 0;
 
   function moveLead(leadId: number, newStage: string) {
     const lead = leads.find((l) => l.id === leadId);
@@ -26,15 +30,11 @@ export function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
     });
   }
 
-  async function deleteAllInStage(stage: string) {
-    const stageLeads = leads.filter((l) => l.stage === stage);
-    if (stageLeads.length === 0) return;
-    if (!confirm(`Er du sikker på at du vil slette ${stageLeads.length} leads fra "${stage}"?`)) return;
-
-    // Optimistic: remove from UI
-    setLeads((prev) => prev.filter((l) => l.stage !== stage));
-
-    // Delete each lead via API
+  async function confirmDeleteAll() {
+    if (!deleteStage) return;
+    const stageLeads = leads.filter((l) => l.stage === deleteStage);
+    setLeads((prev) => prev.filter((l) => l.stage !== deleteStage));
+    setDeleteStage(null);
     for (const lead of stageLeads) {
       await fetch(`/api/leads/${lead.id}`, { method: "DELETE" }).catch(() => {});
     }
@@ -48,28 +48,36 @@ export function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over) return;
-
     const leadId = active.id as number;
     const newStage = over.id as typeof STAGES[number];
-
     if (!STAGES.includes(newStage)) return;
     moveLead(leadId, newStage);
   }
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
-        {STAGES.map((stage) => (
-          <KanbanColumn
-            key={stage}
-            stage={stage}
-            leads={leads.filter((l) => l.stage === stage)}
-            onDeleteAll={stage === "ny" ? () => deleteAllInStage("ny") : undefined}
-            onMoveLead={moveLead}
-            onDeleteLead={deleteLead}
-          />
-        ))}
-      </div>
-    </DndContext>
+    <>
+      <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
+          {STAGES.map((stage) => (
+            <KanbanColumn
+              key={stage}
+              stage={stage}
+              leads={leads.filter((l) => l.stage === stage)}
+              onDeleteAll={stage === "ny" ? () => setDeleteStage("ny") : undefined}
+              onMoveLead={moveLead}
+              onDeleteLead={deleteLead}
+            />
+          ))}
+        </div>
+      </DndContext>
+      <ConfirmDialog
+        open={deleteStage !== null}
+        title="Slett alle leads"
+        description={`Er du sikker på at du vil slette ${deleteCount} leads fra \u00ABNy\u00BB-kolonnen? Denne handlingen kan ikke angres.`}
+        confirmLabel={`Slett ${deleteCount} leads`}
+        onConfirm={confirmDeleteAll}
+        onCancel={() => setDeleteStage(null)}
+      />
+    </>
   );
 }
