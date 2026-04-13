@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
+import { Combobox } from "@/components/ui/Combobox";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { KOMMUNER, NACE_CODES } from "@/lib/constants";
@@ -60,9 +61,7 @@ export function ScrapeConfig({ onStart, disabled }: ScrapeConfigProps) {
         </div>
         <div className="w-full sm:w-64">
           <label className="mb-1 block text-sm font-medium text-text">Bransje (NACE)</label>
-          <Select name="naeringskode">
-            {NACE_CODES.map((n) => <option key={n.value} value={n.value}>{n.label}</option>)}
-          </Select>
+          <Combobox name="naeringskode" options={NACE_CODES} placeholder="Søk bransje..." />
         </div>
       </div>
 
