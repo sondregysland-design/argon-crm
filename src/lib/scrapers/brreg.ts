@@ -38,7 +38,12 @@ export async function searchBrreg(params: {
   if (params.navn) url.searchParams.set("navn", params.navn);
   if (params.kommunenummer) url.searchParams.set("kommunenummer", params.kommunenummer);
   if (params.naeringskode) url.searchParams.set("naeringskode", params.naeringskode);
-  if (params.fraAntallAnsatte) url.searchParams.set("fraAntallAnsatte", String(params.fraAntallAnsatte));
+  // Brønnøysund API personvernkrav: kan ikke søke mellom 1-4 ansatte
+  // fraAntallAnsatte 1-4 justeres opp til 5 automatisk
+  if (params.fraAntallAnsatte) {
+    const fra = params.fraAntallAnsatte >= 1 && params.fraAntallAnsatte <= 4 ? 5 : params.fraAntallAnsatte;
+    url.searchParams.set("fraAntallAnsatte", String(fra));
+  }
   if (params.tilAntallAnsatte) url.searchParams.set("tilAntallAnsatte", String(params.tilAntallAnsatte));
   url.searchParams.set("size", String(params.size ?? 20));
   url.searchParams.set("page", String(params.page ?? 0));
@@ -48,7 +53,9 @@ export async function searchBrreg(params: {
   });
 
   if (!res.ok) {
-    throw new Error(`Brønnøysund API error: ${res.status} ${res.statusText}`);
+    const errorBody = await res.json().catch(() => null);
+    const detail = errorBody?.valideringsfeil?.[0]?.feilmelding;
+    throw new Error(detail ?? `Brønnøysund API error: ${res.status} ${res.statusText}`);
   }
 
   const data: BrregSearchResponse = await res.json();

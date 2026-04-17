@@ -97,16 +97,16 @@ export default function OppfolgingPage() {
         <div className="space-y-4">
           {pending.map((item) => (
             <Card key={item.id}>
-              <div className="flex items-start justify-between mb-3">
-                <div>
+              <div className="flex flex-col gap-1 mb-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0">
                   <Link href={`/leads/${item.leadId}`} className="font-semibold text-text hover:text-primary">
                     {item.leadName}
                   </Link>
-                  <div className="text-sm text-text-light">
+                  <div className="truncate text-sm text-text-light">
                     {item.contactPerson ?? item.email} &middot; Oppfølging #{item.followUpCount + 1}
                   </div>
                 </div>
-                <div className="text-xs text-text-light">
+                <div className="text-xs text-text-light shrink-0">
                   {new Date(item.createdAt).toLocaleDateString("nb-NO")}
                 </div>
               </div>
@@ -126,7 +126,7 @@ export default function OppfolgingPage() {
                 </div>
               )}
 
-              <div className="flex gap-2 justify-end">
+              <div className="flex flex-wrap gap-2 justify-end">
                 {editingId === item.id ? (
                   <Button variant="ghost" onClick={() => setEditingId(null)}>Avbryt redigering</Button>
                 ) : (

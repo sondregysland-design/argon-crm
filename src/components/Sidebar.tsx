@@ -34,7 +34,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
               key={item.href}
               href={item.href}
               onClick={onNavigate}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+              className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition sm:py-2.5 ${
                 active
                   ? "bg-blue-50 text-primary"
                   : "text-text-light hover:bg-gray-50 hover:text-text"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { DndContext, DragEndEvent, closestCorners, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { DndContext, DragEndEvent, closestCorners, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { KanbanColumn } from "@/components/KanbanColumn";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import type { Lead } from "@/lib/db/schema";
@@ -12,7 +12,10 @@ export function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
   const [leads, setLeads] = useState(initialLeads);
   const [deleteStage, setDeleteStage] = useState<string | null>(null);
   const [search, setSearch] = useState("");
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
+  );
 
   const filteredLeads = search
     ? leads.filter((l) => l.name.toLowerCase().includes(search.toLowerCase()) ||

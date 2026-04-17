@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { after } from "next/server";
 import { db } from "@/lib/db";
 import { scrapeJobs } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -17,9 +18,15 @@ export async function POST(request: NextRequest) {
   if (!job) return NextResponse.json({ error: "Jobb ikke funnet" }, { status: 404 });
   if (job.status === "running") return NextResponse.json({ error: "Jobben kjører allerede" }, { status: 409 });
 
-  if (job.name === "brreg_sync") {
-    import("@/lib/jobs/tasks").then(({ runBrregSync }) => runBrregSync());
-  }
+  after(async () => {
+    if (job.name === "brreg_sync") {
+      const { runBrregSync } = await import("@/lib/jobs/tasks");
+      await runBrregSync();
+    } else if (job.name === "google_enrich") {
+      const { runGoogleEnrich } = await import("@/lib/jobs/tasks");
+      await runGoogleEnrich();
+    }
+  });
 
   return NextResponse.json({ ok: true, message: `Starter ${job.name}...` });
 }

@@ -92,7 +92,7 @@ export function LeadCard({ lead, onMoveLead, onDelete }: LeadCardProps) {
           {prevStage ? (
             <button
               onClick={(e) => { e.stopPropagation(); onMoveLead(lead.id, prevStage); }}
-              className={`flex items-center gap-1 rounded px-1.5 py-0.5 text-xs transition ${stageArrowColors[prevStage]}`}
+              className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition ${stageArrowColors[prevStage]}`}
               title={`Flytt til ${stageLabels[prevStage]}`}
             >
               &larr; {stageLabels[prevStage]}
@@ -101,7 +101,7 @@ export function LeadCard({ lead, onMoveLead, onDelete }: LeadCardProps) {
           {nextStage && (
             <button
               onClick={(e) => { e.stopPropagation(); onMoveLead(lead.id, nextStage); }}
-              className={`flex items-center gap-1 rounded px-1.5 py-0.5 text-xs font-medium transition ${stageArrowColors[nextStage]}`}
+              className={`flex items-center gap-1 rounded px-2 py-1 text-xs font-medium transition ${stageArrowColors[nextStage]}`}
               title={`Flytt til ${stageLabels[nextStage]}`}
             >
               {stageLabels[nextStage]} &rarr;

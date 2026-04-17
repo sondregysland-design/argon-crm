@@ -31,7 +31,7 @@ export function TilbudClient({ quotes }: { quotes: Quote[] }) {
 
   return (
     <>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         {FILTER_TABS.map((tab) => (
           <button
             key={tab.value}
@@ -47,7 +47,41 @@ export function TilbudClient({ quotes }: { quotes: Quote[] }) {
         ))}
       </div>
 
-      <Card>
+      {/* Mobile card layout */}
+      <div className="space-y-3 sm:hidden">
+        {filtered.map((q) => (
+          <Card key={q.id}>
+            <div className="flex items-start justify-between">
+              <div>
+                <Link href={`/tilbud/${q.id}`} className="font-medium text-primary hover:underline">
+                  {q.quoteNumber}
+                </Link>
+                <div className="mt-1 text-sm text-text">
+                  {q.leadId && q.leadName ? (
+                    <Link href={`/leads/${q.leadId}`} className="hover:underline">{q.leadName}</Link>
+                  ) : (
+                    <span className="text-text-light">Ingen kunde</span>
+                  )}
+                </div>
+              </div>
+              <Badge label={q.status} />
+            </div>
+            <div className="mt-2 text-xs text-text-light">
+              {new Date(q.createdAt).toLocaleDateString("nb-NO")}
+            </div>
+          </Card>
+        ))}
+        {filtered.length === 0 && (
+          <Card>
+            <div className="py-8 text-center text-text-light">
+              {statusFilter ? "Ingen tilbud med denne statusen." : "Ingen tilbud enda. Opprett det første!"}
+            </div>
+          </Card>
+        )}
+      </div>
+
+      {/* Desktop table layout */}
+      <Card className="hidden sm:block">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-100 text-left text-text-light">

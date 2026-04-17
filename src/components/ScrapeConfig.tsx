@@ -69,7 +69,8 @@ export function ScrapeConfig({ onStart, disabled }: ScrapeConfigProps) {
         <div className="grid grid-cols-2 gap-3 sm:contents">
           <div className="w-full sm:w-36">
             <label className="mb-1 block text-sm font-medium text-text">Min ansatte</label>
-            <Input name="fraAntallAnsatte" type="number" placeholder="0" min={0} />
+            <Input name="fraAntallAnsatte" type="number" placeholder="0 eller 5+" min={0} />
+            <p className="mt-0.5 text-xs text-text-light">0 eller minst 5 (personvern)</p>
           </div>
           <div className="w-full sm:w-36">
             <label className="mb-1 block text-sm font-medium text-text">Maks ansatte</label>

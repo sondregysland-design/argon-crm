@@ -64,9 +64,9 @@ export function EmailComposer({ leadId, leadName, hasEmail }: Props) {
       </Button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
           <div className="absolute inset-0 bg-black/30" onClick={() => setOpen(false)} />
-          <div className="relative w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
+          <div className="relative max-h-[90vh] w-full overflow-y-auto rounded-t-xl bg-white p-5 shadow-xl sm:mx-4 sm:max-w-lg sm:rounded-xl sm:p-6">
             <h2 className="mb-4 text-lg font-semibold text-text">Send e-post til {leadName}</h2>
 
             {sent ? (

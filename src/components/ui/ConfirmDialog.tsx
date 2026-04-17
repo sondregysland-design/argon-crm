@@ -28,7 +28,7 @@ export function ConfirmDialog({ open, title, description, confirmLabel = "Slett"
     <dialog
       ref={dialogRef}
       onClose={onCancel}
-      className="fixed inset-0 z-50 m-auto w-full max-w-sm rounded-xl border border-gray-200 bg-white p-0 shadow-xl backdrop:bg-black/30"
+      className="fixed inset-0 z-50 m-auto mx-4 w-[calc(100%-2rem)] max-w-sm rounded-xl border border-gray-200 bg-white p-0 shadow-xl backdrop:bg-black/30 sm:mx-auto sm:w-full"
     >
       <div className="p-6">
         <h3 className="text-lg font-semibold text-text">{title}</h3>

@@ -35,14 +35,16 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-3 sm:gap-4">
         <Link href="/" className="text-text-light hover:text-text">&larr;</Link>
-        <div>
-          <h1 className="text-2xl font-bold text-text">{lead.name}</h1>
+        <div className="min-w-0 flex-1">
+          <h1 className="truncate text-xl font-bold text-text sm:text-2xl">{lead.name}</h1>
           <p className="text-sm text-text-light">{formatOrgNumber(lead.orgNumber)}</p>
         </div>
-        <Badge label={lead.stage} className="ml-auto" />
-        <EmailComposer leadId={lead.id} leadName={lead.name} hasEmail={!!lead.email} />
+        <div className="flex items-center gap-2">
+          <Badge label={lead.stage} />
+          <EmailComposer leadId={lead.id} leadName={lead.name} hasEmail={!!lead.email} />
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
